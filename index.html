@@ -3,104 +3,215 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora de Precios · Don Rouch</title>
+  <title>Calculadora · Don Rouch</title>
   <meta name="description" content="Calculadora de precios para joyería en plata 800 — 0800 Don Rouch, Taller Valencia">
-  <meta name="theme-color" content="#0f0f0f">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💍</text></svg>">
+  <meta name="theme-color" content="#0c0b09">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚜</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:          #0f0f0f;
-      --surface:     #1a1a18;
-      --surface2:    #242420;
-      --border:      #2e2e2a;
-      --gold:        #c8a84b;
-      --gold-dim:    #8a7230;
-      --text:        #ddd6c8;
-      --text-muted:  #7a7870;
-      --text-dim:    #4a4845;
+      --bg:          #0c0b09;
+      --surface:     #161410;
+      --surface2:    #1e1b16;
+      --surface3:    #252118;
+      --border:      #2a261e;
+      --border-hi:   #363028;
+      --gold:        #c9a84c;
+      --gold-dim:    #8a6f2e;
+      --gold-pale:   #f0d98a;
+      --text:        #e8e0cc;
+      --text-muted:  #7a7260;
+      --text-dim:    #403c30;
       --green:       #4a9a5a;
-      --orange:      #d4842a;
+      --orange:      #d48030;
       --red:         #c04040;
-      --input-bg:    #1e1e1c;
-      --analysis-bg: #161612;
+      --ff-display:  'Cormorant Garamond', Georgia, serif;
+      --ff-mono:     'JetBrains Mono', 'Courier New', monospace;
+      --ff-body:     -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+    html { scroll-behavior: smooth; }
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-      font-size: 14px;
+      font-family: var(--ff-body);
+      font-size: 13.5px;
       line-height: 1.5;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      padding: 28px 16px 80px;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+      opacity: 0.032;
+      pointer-events: none;
+      z-index: 9000;
     }
 
-    .page { width: 100%; max-width: 480px; }
+    /* ── App shell ─────────────────────────────────────────── */
+    .app { max-width: 1080px; margin: 0 auto; padding: 0 24px 80px; }
 
-    /* ── Header ─────────────────────────────────────────────────── */
-    .header-sub {
-      font-size: 10.5px;
-      letter-spacing: 0.14em;
-      color: var(--gold);
+    /* ── Header ────────────────────────────────────────────── */
+    .header {
+      padding: 36px 0 26px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .header-brand {
+      font-size: 10px;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
+      color: var(--gold-dim);
       margin-bottom: 5px;
     }
     .header-title {
-      font-size: 23px;
-      font-weight: 700;
+      font-family: var(--ff-display);
+      font-size: 30px;
+      font-weight: 600;
+      font-style: italic;
       color: var(--text);
       letter-spacing: -0.01em;
-      margin-bottom: 24px;
+      line-height: 1;
     }
 
-    /* ── Divider ─────────────────────────────────────────────────── */
-    .divider { height: 1px; background: var(--border); margin: 22px 0; }
+    /* ── Preset bar ────────────────────────────────────────── */
+    .preset-bar { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+    .preset-select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 12.5px;
+      font-family: var(--ff-body);
+      padding: 8px 11px;
+      cursor: pointer;
+      outline: none;
+      min-width: 150px;
+      transition: border-color 0.15s;
+    }
+    .preset-select:focus { border-color: var(--gold-dim); }
+    .preset-select option { background: #1e1b16; }
+    .btn {
+      padding: 8px 14px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-family: var(--ff-body);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .btn:hover { border-color: var(--gold-dim); color: var(--text); }
+    .btn.primary { background: var(--gold); border-color: var(--gold); color: #0c0a06; font-weight: 600; }
+    .btn.primary:hover { background: var(--gold-pale); border-color: var(--gold-pale); }
+    .btn.danger:hover  { border-color: var(--red); color: var(--red); }
+    .btn.success { border-color: var(--green) !important; color: var(--green) !important; }
 
-    /* ── Section label ───────────────────────────────────────────── */
-    .section-label {
-      font-size: 10px;
+    /* ── Main grid ─────────────────────────────────────────── */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 860px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .sticky-col { position: static !important; }
+    }
+
+    /* ── Section card ──────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+    .card:last-child { margin-bottom: 0; }
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 16px;
+    }
+    .card-num {
+      font-family: var(--ff-mono);
+      font-size: 9.5px;
+      color: var(--gold-dim);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 1px 5px;
+    }
+    .card-title {
+      font-size: 10.5px;
       font-weight: 700;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.17em;
       text-transform: uppercase;
       color: var(--gold);
-      margin-bottom: 13px;
     }
 
-    /* ── Field label ─────────────────────────────────────────────── */
-    .field-label { font-size: 12px; color: var(--text-muted); margin-bottom: 7px; }
+    /* ── Field ─────────────────────────────────────────────── */
+    .field { margin-bottom: 14px; }
+    .field:last-child { margin-bottom: 0; }
+    .label { font-size: 11.5px; color: var(--text-muted); margin-bottom: 6px; display: block; }
 
-    /* ── Text input (light) ──────────────────────────────────────── */
-    .input-light {
+    /* ── Inputs ────────────────────────────────────────────── */
+    .input {
       width: 100%;
-      background: #eeead8;
-      color: #1a1a14;
-      border: none;
-      border-radius: 4px;
-      padding: 13px 14px;
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 10px 12px;
       font-size: 14px;
-      font-family: inherit;
+      font-family: var(--ff-body);
       outline: none;
-      margin-bottom: 18px;
-      transition: box-shadow 0.15s;
+      transition: border-color 0.15s;
     }
-    .input-light:focus { box-shadow: 0 0 0 2px var(--gold-dim); }
-    .input-light::placeholder { color: #b0aa90; }
+    .input:focus { border-color: var(--gold-dim); }
+    .input::placeholder { color: var(--text-dim); }
+    .input-mono {
+      font-family: var(--ff-mono);
+      font-size: 13.5px;
+    }
+    .input-num {
+      width: 100%;
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: var(--ff-mono);
+      outline: none;
+      transition: border-color 0.15s, opacity 0.15s;
+    }
+    .input-num:focus { border-color: var(--gold-dim); }
+    .input-num:disabled { opacity: 0.22; cursor: not-allowed; }
+    .input-num::-webkit-outer-spin-button,
+    .input-num::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .input-num[type=number] { -moz-appearance: textfield; }
 
-    /* ── Stepper ─────────────────────────────────────────────────── */
+    /* ── Stepper ───────────────────────────────────────────── */
     .stepper {
       display: flex;
-      align-items: stretch;
-      border-radius: 4px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
       overflow: hidden;
-      margin-bottom: 9px;
     }
     .stepper-btn {
       width: 46px;
-      background: var(--surface2);
+      background: var(--surface3);
       border: none;
       color: var(--text-muted);
       font-size: 22px;
@@ -112,763 +223,837 @@
       flex-shrink: 0;
       transition: background 0.15s, color 0.15s;
     }
-    .stepper-btn:hover { background: #303028; color: var(--text); }
-    .stepper-btn:active { background: #3a3a30; }
-    .stepper-input {
+    .stepper-btn:hover { background: #2e2a22; color: var(--text); }
+    .stepper-val {
       flex: 1;
-      background: #eeead8;
-      color: #1a1a14;
+      background: var(--surface2);
+      color: var(--text);
       border: none;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
       text-align: center;
-      font-size: 21px;
-      font-weight: 700;
-      padding: 11px 8px;
-      font-family: inherit;
+      font-size: 24px;
+      font-weight: 600;
+      font-family: var(--ff-mono);
+      padding: 9px 8px;
       outline: none;
     }
-    .stepper-input::-webkit-outer-spin-button,
-    .stepper-input::-webkit-inner-spin-button { -webkit-appearance: none; }
-    .stepper-input[type=number] { -moz-appearance: textfield; }
+    .stepper-val::-webkit-outer-spin-button,
+    .stepper-val::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .stepper-val[type=number] { -moz-appearance: textfield; }
+    .hint { font-family: var(--ff-mono); font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+    .hint em { font-style: normal; color: var(--text); }
 
-    .info-line { font-size: 12px; color: var(--text-muted); }
-    .info-line em { font-style: normal; color: var(--text); }
-
-    /* ── Toggle buttons ──────────────────────────────────────────── */
-    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    /* ── Toggle buttons ────────────────────────────────────── */
+    .toggle-group { display: flex; gap: 6px; flex-wrap: wrap; }
     .toggle-btn {
-      padding: 9px 18px;
+      padding: 8px 15px;
       border-radius: 4px;
       border: 1px solid var(--border);
       background: var(--surface2);
       color: var(--text-muted);
-      font-size: 13px;
-      font-family: inherit;
+      font-size: 12.5px;
+      font-family: var(--ff-body);
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.15s;
     }
     .toggle-btn:hover { border-color: var(--gold-dim); color: var(--text); }
-    .toggle-btn.active {
-      background: var(--gold);
-      border-color: var(--gold);
-      color: #111108;
-      font-weight: 600;
-    }
+    .toggle-btn.active { background: var(--gold); border-color: var(--gold); color: #0c0a06; font-weight: 600; }
 
-    /* ── Stone sub-inputs ────────────────────────────────────────── */
-    .stone-inputs { display: none; gap: 10px; margin-top: 13px; }
-    .stone-inputs.visible { display: flex; }
-    .stone-inputs .input-group { flex: 1; }
-
-    /* ── Extras grid ─────────────────────────────────────────────── */
-    .extras-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 13px;
-    }
-
-    /* ── Input group ─────────────────────────────────────────────── */
-    .input-group { display: flex; flex-direction: column; gap: 5px; }
-    .input-group label { font-size: 11px; color: var(--text-muted); }
-
-    /* ── Dark number input ───────────────────────────────────────── */
-    .input-dark {
-      background: var(--input-bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 10px 12px;
-      font-size: 15px;
-      font-family: inherit;
-      outline: none;
+    /* ── Stone blocks ──────────────────────────────────────── */
+    .stone-block { display: none; margin-top: 13px; }
+    .stone-block.visible { display: block; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stone-select {
       width: 100%;
-      transition: border-color 0.15s, opacity 0.15s;
-    }
-    .input-dark:focus { border-color: var(--gold-dim); }
-    .input-dark:disabled { opacity: 0.30; cursor: not-allowed; }
-    .input-dark::-webkit-outer-spin-button,
-    .input-dark::-webkit-inner-spin-button { -webkit-appearance: none; }
-    .input-dark[type=number] { -moz-appearance: textfield; }
-
-    /* ── Analysis card ───────────────────────────────────────────── */
-    .analysis-card {
-      background: var(--analysis-bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 20px 18px;
-      margin-top: 24px;
-    }
-
-    .analysis-label {
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 3px;
-    }
-    .analysis-piece-name {
-      font-size: 17px;
-      font-weight: 600;
+      background: var(--surface2);
       color: var(--text);
-      margin-bottom: 18px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 9px 11px;
+      font-size: 13px;
+      font-family: var(--ff-body);
+      outline: none;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: border-color 0.15s;
     }
+    .stone-select:focus { border-color: var(--gold-dim); }
+    .stone-select option { background: #1e1b16; }
 
-    .pvp-label {
-      font-size: 10px;
-      letter-spacing: 0.12em;
+    /* ── Analysis card ─────────────────────────────────────── */
+    .sticky-col { position: sticky; top: 24px; }
+    .analysis-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .analysis-head {
+      padding: 15px 18px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    .analysis-eyebrow {
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+    .analysis-name {
+      font-family: var(--ff-display);
+      font-size: 19px;
+      font-style: italic;
+      color: var(--text);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .analysis-body { padding: 18px; }
+
+    /* PVP */
+    .pvp-eyebrow {
+      font-size: 9px;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-bottom: 4px;
+      margin-bottom: 3px;
+    }
+    @keyframes pvp-flash {
+      0%   { opacity: 0.45; transform: translateY(3px); }
+      100% { opacity: 1;    transform: translateY(0); }
     }
     .pvp-price {
-      font-size: 44px;
-      font-weight: 800;
+      font-family: var(--ff-display);
+      font-size: 50px;
+      font-weight: 700;
       color: var(--gold);
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
       line-height: 1;
-      margin-bottom: 5px;
+      transition: color 0.3s;
     }
+    .pvp-price.flash { animation: pvp-flash 0.22s ease; }
     .pvp-meta {
-      font-size: 12px;
+      font-family: var(--ff-mono);
+      font-size: 11px;
       color: var(--text-dim);
-      margin-bottom: 22px;
+      margin-top: 4px;
+      margin-bottom: 16px;
     }
     .pvp-meta em { font-style: normal; color: var(--text-muted); }
 
-    /* ── Custom price row ────────────────────────────────────────── */
-    .custom-price-wrap {
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 4px;
+    /* Custom price check */
+    .custom-wrap {
+      background: var(--surface2);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
     }
-    .custom-price-label {
-      font-size: 10px;
-      letter-spacing: 0.10em;
+    .custom-eyebrow {
+      font-size: 9.5px;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-bottom: 9px;
+      margin-bottom: 8px;
     }
-    .custom-price-row { display: flex; align-items: center; gap: 8px; }
-    .custom-price-input {
+    .custom-row { display: flex; align-items: center; gap: 7px; }
+    .custom-input {
       flex: 1;
-      min-width: 0;
       background: transparent;
       color: var(--text);
       border: none;
-      border-bottom: 1px solid var(--border);
-      padding: 5px 2px;
+      border-bottom: 1px solid var(--border-hi);
+      padding: 4px 2px;
       font-size: 18px;
-      font-family: inherit;
+      font-family: var(--ff-mono);
       outline: none;
       transition: border-color 0.15s;
     }
-    .custom-price-input:focus { border-bottom-color: var(--gold-dim); }
-    .custom-price-input::placeholder { color: var(--text-dim); }
-    .custom-price-input::-webkit-outer-spin-button,
-    .custom-price-input::-webkit-inner-spin-button { -webkit-appearance: none; }
-    .custom-price-input[type=number] { -moz-appearance: textfield; }
-    .custom-price-suffix { font-size: 13px; color: var(--text-muted); white-space: nowrap; }
-    .custom-price-clear {
-      background: none; border: none; color: var(--text-dim);
-      font-size: 20px; line-height: 1; cursor: pointer; padding: 0 2px;
-      transition: color 0.15s;
-    }
-    .custom-price-clear:hover { color: var(--text-muted); }
-    .custom-margin-result {
-      font-size: 12px;
-      margin-top: 7px;
-      display: none;
-    }
+    .custom-input:focus { border-bottom-color: var(--gold-dim); }
+    .custom-input::placeholder { color: var(--text-dim); }
+    .custom-input::-webkit-outer-spin-button,
+    .custom-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .custom-input[type=number] { -moz-appearance: textfield; }
+    .custom-suffix { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+    .custom-clear { background: none; border: none; color: var(--text-dim); font-size: 19px; cursor: pointer; padding: 0 2px; transition: color 0.15s; }
+    .custom-clear:hover { color: var(--text-muted); }
+    .custom-result { font-family: var(--ff-mono); font-size: 11.5px; margin-top: 6px; display: none; }
 
-    /* ── Breakdown ───────────────────────────────────────────────── */
-    .bk-category {
-      font-size: 9.5px;
-      letter-spacing: 0.14em;
+    /* Breakdown */
+    .bk-cat {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--gold);
-      margin: 14px 0 6px;
+      color: var(--gold-dim);
+      margin: 13px 0 5px;
     }
-    .bk-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      padding: 2.5px 0;
-    }
-    .bk-label { font-size: 13px; color: var(--text-muted); }
-    .bk-val   { font-size: 13px; color: var(--text); font-variant-numeric: tabular-nums; }
-    .bk-subtotal {
+    .bk-row { display: flex; justify-content: space-between; align-items: baseline; padding: 2px 0; }
+    .bk-l { font-size: 12.5px; color: var(--text-muted); }
+    .bk-v { font-family: var(--ff-mono); font-size: 12.5px; color: var(--text); }
+    .bk-sub {
       display: flex; justify-content: space-between;
       border-top: 1px solid var(--border);
-      margin-top: 8px; padding-top: 7px;
+      margin-top: 7px; padding-top: 6px;
     }
-    .bk-subtotal .bk-label { color: var(--text); font-size: 13px; }
-    .bk-subtotal .bk-val   { font-size: 13px; }
+    .bk-sub .bk-l { color: var(--text); }
     .bk-total {
       display: flex; justify-content: space-between;
-      border-top: 1px solid var(--border);
-      margin-top: 14px; padding-top: 11px;
+      border-top: 1px solid var(--border-hi);
+      margin-top: 11px; padding-top: 10px;
     }
-    .bk-total .bk-label { font-size: 14px; font-weight: 600; color: var(--text); }
-    .bk-total .bk-val   { font-size: 14px; font-weight: 600; }
+    .bk-total .bk-l { font-size: 13.5px; font-weight: 600; }
+    .bk-total .bk-v { font-size: 13.5px; font-weight: 600; }
 
-    /* ── Margin bar ──────────────────────────────────────────────── */
-    .margin-section {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-    }
-    .margin-track {
-      height: 4px;
-      background: var(--surface2);
-      border-radius: 2px;
-      margin-bottom: 9px;
-      overflow: hidden;
-    }
-    .margin-fill {
-      height: 100%;
-      border-radius: 2px;
-      background: var(--gold);
-      transition: width 0.35s ease, background 0.35s;
-    }
-    .margin-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      margin-bottom: 5px;
-    }
-    .margin-key   { color: var(--text-muted); }
-    .margin-pct   { font-weight: 700; color: var(--text); }
-    .margin-obj   { color: var(--text-muted); }
-    .margin-msg   { font-size: 12px; margin-top: 6px; }
+    /* Margin */
+    .margin-wrap { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .margin-track { height: 3px; background: var(--surface3); border-radius: 2px; margin-bottom: 7px; overflow: hidden; }
+    .margin-fill { height: 100%; border-radius: 2px; background: var(--gold); transition: width 0.4s cubic-bezier(0.4,0,0.2,1), background 0.3s; }
+    .margin-row { display: flex; justify-content: space-between; font-size: 11.5px; font-family: var(--ff-mono); }
+    .margin-key { color: var(--text-muted); }
+    .margin-pct { font-weight: 600; }
+    .margin-obj { color: var(--text-muted); }
+    .margin-msg { font-size: 11.5px; margin-top: 5px; }
     .margin-msg.warn { color: var(--orange); }
     .margin-msg.ok   { color: var(--green); }
-
-    .alert-box {
-      background: rgba(212,132,42,0.10);
-      border: 1px solid rgba(212,132,42,0.28);
-      border-radius: 5px;
-      padding: 12px 14px;
-      font-size: 13px;
-      color: var(--orange);
-      margin-top: 12px;
-      display: none;
-      line-height: 1.45;
+    .alert {
+      border-radius: 5px; padding: 10px 13px; font-size: 12.5px;
+      margin-top: 9px; display: none; line-height: 1.45;
     }
-    .alert-box.ok {
-      background: rgba(74,154,90,0.10);
-      border-color: rgba(74,154,90,0.28);
-      color: var(--green);
-    }
+    .alert.warn { background: rgba(212,128,48,0.07); border: 1px solid rgba(212,128,48,0.2); color: var(--orange); }
 
-    /* ── Copy button ─────────────────────────────────────────────── */
-    .copy-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      margin-top: 18px;
-      padding: 12px 16px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      color: var(--text-muted);
-      font-size: 13px;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all 0.15s;
+    /* Action bar */
+    .action-bar { display: flex; gap: 7px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .action-btn {
+      flex: 1; padding: 9px 10px; border-radius: 5px;
+      border: 1px solid var(--border); background: var(--surface2);
+      color: var(--text-muted); font-size: 11.5px; font-family: var(--ff-body);
+      cursor: pointer; text-align: center; transition: all 0.15s;
     }
-    .copy-btn:hover { border-color: var(--gold-dim); color: var(--text); }
-    .copy-btn.copied { border-color: var(--green); color: var(--green); }
+    .action-btn:hover { border-color: var(--gold-dim); color: var(--text); }
 
-    /* ── Params section ──────────────────────────────────────────── */
-    .params-wrap { margin-top: 20px; }
+    /* ── Params section ────────────────────────────────────── */
+    .params-section { margin-top: 20px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
     .params-toggle {
-      display: flex; align-items: center; gap: 6px;
-      cursor: pointer; background: none; border: none;
-      color: var(--text-muted); font-size: 10px;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      font-family: inherit; padding: 12px 0; width: 100%;
-      transition: color 0.15s;
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; padding: 15px 20px; background: var(--surface);
+      border: none; color: var(--text-muted); font-size: 10.5px;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      font-family: var(--ff-body); cursor: pointer; transition: color 0.15s;
     }
     .params-toggle:hover { color: var(--text); }
-    .params-arrow { transition: transform 0.2s; display: inline-block; }
+    .params-arrow { transition: transform 0.2s; font-size: 10px; }
     .params-toggle.open .params-arrow { transform: rotate(180deg); }
-    .params-panel { display: none; padding-bottom: 24px; }
+    .params-panel { display: none; }
     .params-panel.open { display: block; }
+    .params-inner { background: var(--surface); border-top: 1px solid var(--border); padding: 20px; }
     .params-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .params-group-label {
-      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--gold-dim); margin: 14px 0 4px; grid-column: 1 / -1;
+    .params-group {
+      font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--gold-dim); margin: 13px 0 3px; grid-column: 1 / -1;
+    }
+    .ig { display: flex; flex-direction: column; gap: 5px; }
+    .ig label { font-size: 11px; color: var(--text-muted); }
+
+    /* Stone catalog */
+    .catalog-wrap { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .catalog-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .catalog-eyebrow { font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-dim); }
+    .catalog-list { display: flex; flex-direction: column; gap: 6px; }
+    .catalog-item {
+      display: flex; align-items: center; gap: 7px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 4px; padding: 7px 10px;
+    }
+    .ci-name {
+      flex: 1; font-size: 12.5px; color: var(--text);
+      background: transparent; border: none; outline: none;
+      font-family: var(--ff-body);
+    }
+    .ci-price {
+      width: 68px; font-size: 12.5px; font-family: var(--ff-mono);
+      background: transparent; border: none; border-bottom: 1px solid var(--border);
+      color: var(--text); text-align: right; padding: 2px 2px; outline: none;
+      transition: border-color 0.15s;
+    }
+    .ci-price:focus { border-bottom-color: var(--gold-dim); }
+    .ci-price::-webkit-outer-spin-button,
+    .ci-price::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .ci-price[type=number] { -moz-appearance: textfield; }
+    .ci-unit { font-size: 10.5px; color: var(--text-dim); }
+    .ci-del { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 17px; padding: 0 1px; transition: color 0.15s; }
+    .ci-del:hover { color: var(--red); }
+
+    /* IO row */
+    .io-row { display: flex; gap: 7px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 580px) {
+      .app { padding: 0 14px 60px; }
+      .header { padding: 22px 0 18px; }
+      .header-title { font-size: 24px; }
+      .pvp-price { font-size: 40px; }
+      .two-col { grid-template-columns: 1fr; }
+      .params-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-<div class="page">
+<div class="app">
 
-  <!-- Header -->
-  <p class="header-sub">0800 Don Rouch &middot; Taller Valencia</p>
-  <h1 class="header-title">Calculadora de precios</h1>
-
-  <!-- ─── LA PIEZA ─────────────────────────────────────────────── -->
-  <p class="section-label">La pieza</p>
-
-  <p class="field-label">Nombre (opcional)</p>
-  <input type="text" class="input-light" id="pieceName" placeholder="Ej. Chain Clasica Baby">
-
-  <p class="field-label">Peso en plata 800</p>
-  <div class="stepper">
-    <button class="stepper-btn" id="weightMinus">−</button>
-    <input type="number" class="stepper-input" id="weightInput" value="5" min="0" step="0.5">
-    <button class="stepper-btn" id="weightPlus">+</button>
-  </div>
-  <p class="info-line" id="metalInfo">&nbsp;</p>
-
-  <div class="divider"></div>
-
-  <!-- ─── PIEDRAS ──────────────────────────────────────────────── -->
-  <p class="section-label">Piedras</p>
-  <div class="btn-group" id="piedrasGroup">
-    <button class="toggle-btn active" data-val="none">Sin piedras</button>
-    <button class="toggle-btn" data-val="cubicos">Cúbicos</button>
-    <button class="toggle-btn" data-val="otras">Otras</button>
-  </div>
-
-  <div class="stone-inputs" id="stoneInputsCubicos">
-    <div class="input-group">
-      <label>Nº piedras</label>
-      <input type="number" class="input-dark" id="stoneCount" value="0" min="0">
+  <header class="header">
+    <div>
+      <p class="header-brand">0800 Don Rouch &middot; Taller Valencia</p>
+      <h1 class="header-title">Calculadora de precios</h1>
     </div>
-    <div class="input-group">
-      <label>Precio / ud €</label>
-      <input type="number" class="input-dark" id="stonePriceUnit" value="0.50" min="0" step="0.05">
+    <div class="preset-bar">
+      <select class="preset-select" id="presetSelect">
+        <option value="">— Nueva pieza —</option>
+      </select>
+      <button class="btn primary" id="savePresetBtn">Guardar</button>
+      <button class="btn danger" id="deletePresetBtn" style="display:none">Eliminar</button>
     </div>
-  </div>
+  </header>
 
-  <div class="stone-inputs" id="stoneInputsOtras">
-    <div class="input-group" style="flex:1">
-      <label>Costo piedras €</label>
-      <input type="number" class="input-dark" id="stoneCostOtras" value="0" min="0" step="0.5">
-    </div>
-  </div>
+  <div class="main-grid">
 
-  <div class="divider"></div>
+    <!-- ── LEFT: inputs ──────────────────────────────────── -->
+    <div>
 
-  <!-- ─── EXTRAS ───────────────────────────────────────────────── -->
-  <p class="section-label">Extras</p>
-  <div class="btn-group" id="extrasGroup">
-    <button class="toggle-btn" data-extra="bano">Baño oro</button>
-    <button class="toggle-btn" data-extra="grabado">Grabado</button>
-  </div>
-  <div class="extras-grid">
-    <div class="input-group">
-      <label>Costo baño oro €</label>
-      <input type="number" class="input-dark" id="extraBano" value="20" min="0" step="1" disabled>
-    </div>
-    <div class="input-group">
-      <label>Cadena / chain €</label>
-      <input type="number" class="input-dark" id="extraCadena" value="0" min="0" step="0.5">
-    </div>
-    <div class="input-group">
-      <label>Tratam. superficie €</label>
-      <input type="number" class="input-dark" id="extraTratam" value="0" min="0" step="0.5" disabled>
-    </div>
-    <div class="input-group">
-      <label>Otro extra €</label>
-      <input type="number" class="input-dark" id="extraOtro" value="0" min="0" step="0.5">
-    </div>
-  </div>
-
-  <!-- ─── ANÁLISIS DE PRECIO ───────────────────────────────────── -->
-  <div class="analysis-card">
-    <p class="analysis-label">Análisis de precio</p>
-    <p class="analysis-piece-name" id="analysisPieceName">Nueva pieza</p>
-
-    <p class="pvp-label">PVP sugerido con IVA (21%)</p>
-    <p class="pvp-price" id="pvpPrice">€0.00</p>
-    <p class="pvp-meta" id="pvpMeta">&nbsp;</p>
-
-    <!-- Custom price -->
-    <div class="custom-price-wrap">
-      <p class="custom-price-label">¿Qué margen te da tu precio?</p>
-      <div class="custom-price-row">
-        <input type="number" class="custom-price-input" id="customPrice" placeholder="0.00" min="0" step="0.01">
-        <span class="custom-price-suffix">€ IVA inc.</span>
-        <button class="custom-price-clear" id="clearCustom" title="Borrar">−</button>
+      <!-- 01 La pieza -->
+      <div class="card">
+        <div class="card-head">
+          <span class="card-num">01</span>
+          <span class="card-title">La pieza</span>
+        </div>
+        <div class="field">
+          <label class="label">Nombre (opcional)</label>
+          <input type="text" class="input" id="pieceName" placeholder="Ej. Chain Clásica Baby">
+        </div>
+        <div class="field">
+          <label class="label">Peso en plata 800 (gramos)</label>
+          <div class="stepper">
+            <button class="stepper-btn" id="weightMinus">−</button>
+            <input type="number" class="stepper-val" id="weightInput" value="5" min="0" step="0.5">
+            <button class="stepper-btn" id="weightPlus">+</button>
+          </div>
+          <p class="hint" id="metalInfo">&nbsp;</p>
+        </div>
       </div>
-      <p class="custom-margin-result" id="customMarginResult"></p>
-    </div>
 
-    <!-- Breakdown -->
-    <p class="bk-category">Materia prima</p>
-    <div class="bk-row"><span class="bk-label">Metal plata (incl. merma <span id="bkMermaLbl">10</span>%)</span><span class="bk-val" id="bkMetal">€0.00</span></div>
-    <div class="bk-row"><span class="bk-label">Piedras</span><span class="bk-val" id="bkPiedras">€0.00</span></div>
-    <div class="bk-row"><span class="bk-label">Extras (oro/grabado/otros)</span><span class="bk-val" id="bkExtras">€0.00</span></div>
-    <div class="bk-row"><span class="bk-label">Resina + yeso + consumibles</span><span class="bk-val" id="bkConsumibles">€0.00</span></div>
-    <div class="bk-subtotal">
-      <span class="bk-label">Subtotal materiales</span>
-      <span class="bk-val" id="bkMatSubtotal">€0.00</span>
-    </div>
+      <!-- 02 Piedras -->
+      <div class="card">
+        <div class="card-head">
+          <span class="card-num">02</span>
+          <span class="card-title">Piedras</span>
+        </div>
+        <div class="toggle-group" id="piedrasGroup">
+          <button class="toggle-btn active" data-val="none">Sin piedras</button>
+          <button class="toggle-btn" data-val="cubicos">Cúbicos</button>
+          <button class="toggle-btn" data-val="otras">Otras / semipreciosas</button>
+        </div>
 
-    <p class="bk-category">Producción</p>
-    <div class="bk-row"><span class="bk-label" id="bkPersonalLbl">Personal (4 personas)</span><span class="bk-val" id="bkPersonal">€0.00</span></div>
-    <div class="bk-row"><span class="bk-label">Energía (electricidad + gas)</span><span class="bk-val" id="bkEnergia">€0.00</span></div>
+        <div class="stone-block" id="stoneBlockCubicos">
+          <label class="label" style="margin-top:13px;display:block">Tipo de piedra</label>
+          <select class="stone-select" id="stoneTypeSelect"></select>
+          <div class="two-col">
+            <div class="field">
+              <label class="label">Nº piedras</label>
+              <input type="number" class="input-num" id="stoneCount" value="0" min="0">
+            </div>
+            <div class="field">
+              <label class="label">Precio / ud €</label>
+              <input type="number" class="input-num" id="stonePriceUnit" value="0.50" min="0" step="0.05">
+            </div>
+          </div>
+        </div>
 
-    <p class="bk-category">Estructura</p>
-    <div class="bk-row"><span class="bk-label">Alquiler taller</span><span class="bk-val" id="bkAlquiler">€0.00</span></div>
-    <div class="bk-row"><span class="bk-label">Amort. + seguro + gestoría</span><span class="bk-val" id="bkAmort">€0.00</span></div>
-
-    <p class="bk-category">Ecommerce</p>
-    <div class="bk-row"><span class="bk-label">Shopify + pasarela</span><span class="bk-val" id="bkShopify">€0.00</span></div>
-    <div class="bk-row"><span class="bk-label">Envío + packaging + foto</span><span class="bk-val" id="bkEnvio">€0.00</span></div>
-    <div class="bk-row"><span class="bk-label">Provisión impuestos</span><span class="bk-val" id="bkImpuestos">€0.00</span></div>
-
-    <div class="bk-total">
-      <span class="bk-label">Costo total real</span>
-      <span class="bk-val" id="bkTotal">€0.00</span>
-    </div>
-
-    <!-- Margin bar -->
-    <div class="margin-section">
-      <div class="margin-track">
-        <div class="margin-fill" id="marginFill" style="width:0%"></div>
+        <div class="stone-block" id="stoneBlockOtras">
+          <div class="field" style="margin-top:13px">
+            <label class="label">Costo total piedras €</label>
+            <input type="number" class="input-num" id="stoneCostOtras" value="0" min="0" step="0.5">
+          </div>
+        </div>
       </div>
-      <div class="margin-row">
-        <span class="margin-key">Margen real</span>
-        <span class="margin-pct" id="marginPct">0.0%</span>
-        <span class="margin-obj" id="marginObj">Objetivo: 40.0%</span>
-      </div>
-      <p class="margin-msg" id="marginMsg"></p>
-      <div class="alert-box" id="alertBox"></div>
-    </div>
-    <button class="copy-btn" id="copyBtn">Copiar resumen de precio</button>
-  </div>
 
-  <!-- ─── PARÁMETROS DEL TALLER ─────────────────────────────────── -->
-  <div class="params-wrap">
-    <div class="divider" style="margin-bottom:0"></div>
+      <!-- 03 Extras -->
+      <div class="card">
+        <div class="card-head">
+          <span class="card-num">03</span>
+          <span class="card-title">Extras</span>
+        </div>
+        <div class="toggle-group" id="extrasGroup" style="margin-bottom:14px">
+          <button class="toggle-btn" data-extra="bano">Baño oro</button>
+          <button class="toggle-btn" data-extra="grabado">Grabado / tratamiento</button>
+        </div>
+        <div class="two-col">
+          <div class="ig">
+            <label>Costo baño oro €</label>
+            <input type="number" class="input-num" id="extraBano" value="20" min="0" step="1" disabled>
+          </div>
+          <div class="ig">
+            <label>Cadena / chain €</label>
+            <input type="number" class="input-num" id="extraCadena" value="0" min="0" step="0.5">
+          </div>
+          <div class="ig">
+            <label>Grabado / tratamiento €</label>
+            <input type="number" class="input-num" id="extraTratam" value="0" min="0" step="0.5" disabled>
+          </div>
+          <div class="ig">
+            <label>Otro extra €</label>
+            <input type="number" class="input-num" id="extraOtro" value="0" min="0" step="0.5">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── RIGHT: analysis ───────────────────────────────── -->
+    <div class="sticky-col">
+      <div class="analysis-card">
+        <div class="analysis-head">
+          <p class="analysis-eyebrow">Análisis de precio</p>
+          <p class="analysis-name" id="analysisPieceName">Nueva pieza</p>
+        </div>
+        <div class="analysis-body">
+
+          <p class="pvp-eyebrow">PVP sugerido con IVA</p>
+          <p class="pvp-price" id="pvpPrice">€0.00</p>
+          <p class="pvp-meta" id="pvpMeta">&nbsp;</p>
+
+          <div class="custom-wrap">
+            <p class="custom-eyebrow">¿Qué margen te da tu precio?</p>
+            <div class="custom-row">
+              <input type="number" class="custom-input" id="customPrice" placeholder="0.00" min="0" step="0.01">
+              <span class="custom-suffix">€ IVA inc.</span>
+              <button class="custom-clear" id="clearCustom" title="Borrar">×</button>
+            </div>
+            <p class="custom-result" id="customMarginResult"></p>
+          </div>
+
+          <p class="bk-cat">Materia prima</p>
+          <div class="bk-row"><span class="bk-l">Metal plata (merma <span id="bkMermaLbl">10</span>%)</span><span class="bk-v" id="bkMetal">€0.00</span></div>
+          <div class="bk-row"><span class="bk-l">Piedras</span><span class="bk-v" id="bkPiedras">€0.00</span></div>
+          <div class="bk-row"><span class="bk-l">Extras</span><span class="bk-v" id="bkExtras">€0.00</span></div>
+          <div class="bk-row"><span class="bk-l">Consumibles</span><span class="bk-v" id="bkConsumibles">€0.00</span></div>
+          <div class="bk-sub"><span class="bk-l">Subtotal materiales</span><span class="bk-v" id="bkMatSubtotal">€0.00</span></div>
+
+          <p class="bk-cat">Producción</p>
+          <div class="bk-row"><span class="bk-l" id="bkPersonalLbl">Personal (4 personas)</span><span class="bk-v" id="bkPersonal">€0.00</span></div>
+          <div class="bk-row"><span class="bk-l">Energía</span><span class="bk-v" id="bkEnergia">€0.00</span></div>
+
+          <p class="bk-cat">Estructura</p>
+          <div class="bk-row"><span class="bk-l">Alquiler taller</span><span class="bk-v" id="bkAlquiler">€0.00</span></div>
+          <div class="bk-row"><span class="bk-l">Amort. + seguro + gestoría</span><span class="bk-v" id="bkAmort">€0.00</span></div>
+
+          <p class="bk-cat">Ecommerce</p>
+          <div class="bk-row"><span class="bk-l">Shopify + pasarela</span><span class="bk-v" id="bkShopify">€0.00</span></div>
+          <div class="bk-row"><span class="bk-l">Envío + packaging + foto</span><span class="bk-v" id="bkEnvio">€0.00</span></div>
+          <div class="bk-row"><span class="bk-l">Provisión impuestos</span><span class="bk-v" id="bkImpuestos">€0.00</span></div>
+
+          <div class="bk-total">
+            <span class="bk-l">Costo total real</span>
+            <span class="bk-v" id="bkTotal">€0.00</span>
+          </div>
+
+          <div class="margin-wrap">
+            <div class="margin-track"><div class="margin-fill" id="marginFill" style="width:0%"></div></div>
+            <div class="margin-row">
+              <span class="margin-key">Margen real</span>
+              <span class="margin-pct" id="marginPct">0.0%</span>
+              <span class="margin-obj" id="marginObj">Obj: 40.0%</span>
+            </div>
+            <p class="margin-msg" id="marginMsg"></p>
+            <div class="alert" id="alertBox"></div>
+          </div>
+
+          <div class="action-bar">
+            <button class="action-btn" id="copyBtn">Copiar resumen</button>
+            <button class="action-btn" id="exportBtn">Exportar JSON</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-grid -->
+
+  <!-- ── Params ──────────────────────────────────────────── -->
+  <div class="params-section">
     <button class="params-toggle" id="paramsToggle">
-      Parámetros del taller <span class="params-arrow">▼</span>
+      <span>Parámetros del taller</span>
+      <span class="params-arrow">▼</span>
     </button>
     <div class="params-panel" id="paramsPanel">
-      <div class="params-grid">
+      <div class="params-inner">
+        <div class="params-grid">
 
-        <div class="params-group-label">Metal</div>
-        <div class="input-group">
-          <label>Precio plata fina €/g</label>
-          <input type="number" class="input-dark" id="pPrecioPlata" value="2.27" step="0.01" min="0">
-        </div>
-        <div class="input-group">
-          <label>Ley plata (%)</label>
-          <input type="number" class="input-dark" id="pLeyPlata" value="80" step="1" min="0" max="100">
-        </div>
-        <div class="input-group">
-          <label>Merma (%)</label>
-          <input type="number" class="input-dark" id="pMerma" value="10" step="1" min="0" max="50">
-        </div>
-        <div class="input-group">
-          <label>IVA (%)</label>
-          <input type="number" class="input-dark" id="pIva" value="21" step="1" min="0">
-        </div>
+          <div class="params-group">Metal</div>
+          <div class="ig"><label>Precio plata fina €/g</label><input type="number" class="input-num" id="pPrecioPlata" value="2.27" step="0.01" min="0"></div>
+          <div class="ig"><label>Ley plata (%)</label><input type="number" class="input-num" id="pLeyPlata" value="80" step="1" min="0" max="100"></div>
+          <div class="ig"><label>Merma (%)</label><input type="number" class="input-num" id="pMerma" value="10" step="1" min="0" max="50"></div>
+          <div class="ig"><label>IVA (%)</label><input type="number" class="input-num" id="pIva" value="21" step="1" min="0"></div>
 
-        <div class="params-group-label">Producción</div>
-        <div class="input-group">
-          <label>Personal/mes €</label>
-          <input type="number" class="input-dark" id="pPersonal" value="1720" step="10" min="0">
-        </div>
-        <div class="input-group">
-          <label>Nº personas</label>
-          <input type="number" class="input-dark" id="pPersonas" value="4" step="1" min="1">
-        </div>
-        <div class="input-group">
-          <label>Energía/mes €</label>
-          <input type="number" class="input-dark" id="pEnergia" value="144" step="5" min="0">
-        </div>
-        <div class="input-group">
-          <label>Piezas/mes</label>
-          <input type="number" class="input-dark" id="pPiezas" value="120" step="5" min="1">
+          <div class="params-group">Producción</div>
+          <div class="ig"><label>Personal/mes €</label><input type="number" class="input-num" id="pPersonal" value="1720" step="10" min="0"></div>
+          <div class="ig"><label>Nº personas</label><input type="number" class="input-num" id="pPersonas" value="4" step="1" min="1"></div>
+          <div class="ig"><label>Energía/mes €</label><input type="number" class="input-num" id="pEnergia" value="144" step="5" min="0"></div>
+          <div class="ig"><label>Piezas/mes</label><input type="number" class="input-num" id="pPiezas" value="120" step="5" min="1"></div>
+
+          <div class="params-group">Estructura</div>
+          <div class="ig"><label>Alquiler/mes €</label><input type="number" class="input-num" id="pAlquiler" value="400" step="10" min="0"></div>
+          <div class="ig"><label>Amort.+seguro+gest. €</label><input type="number" class="input-num" id="pAmort" value="180" step="5" min="0"></div>
+          <div class="ig"><label>Consumibles/pieza €</label><input type="number" class="input-num" id="pConsumibles" value="2.60" step="0.1" min="0"></div>
+
+          <div class="params-group">Ecommerce</div>
+          <div class="ig"><label>Shopify+pasarela/mes €</label><input type="number" class="input-num" id="pShopify" value="190" step="5" min="0"></div>
+          <div class="ig"><label>Envío+packaging+foto €</label><input type="number" class="input-num" id="pEnvio" value="9.16" step="0.1" min="0"></div>
+
+          <div class="params-group">Márgenes</div>
+          <div class="ig"><label>Objetivo margen (%)</label><input type="number" class="input-num" id="pObjetivo" value="40" step="1" min="1" max="90"></div>
+          <div class="ig"><label>Provisión impuestos (%)</label><input type="number" class="input-num" id="pProvision" value="20" step="1" min="0" max="50"></div>
+
         </div>
 
-        <div class="params-group-label">Estructura</div>
-        <div class="input-group">
-          <label>Alquiler/mes €</label>
-          <input type="number" class="input-dark" id="pAlquiler" value="400" step="10" min="0">
-        </div>
-        <div class="input-group">
-          <label>Amort.+seguro+gest. €</label>
-          <input type="number" class="input-dark" id="pAmort" value="180" step="5" min="0">
-        </div>
-        <div class="input-group">
-          <label>Consumibles/pieza €</label>
-          <input type="number" class="input-dark" id="pConsumibles" value="2.60" step="0.1" min="0">
+        <!-- Stone catalog -->
+        <div class="catalog-wrap">
+          <div class="catalog-head">
+            <span class="catalog-eyebrow">Catálogo de piedras</span>
+            <button class="btn" id="addStoneBtn">+ Agregar</button>
+          </div>
+          <div class="catalog-list" id="stoneCatalogList"></div>
         </div>
 
-        <div class="params-group-label">Ecommerce</div>
-        <div class="input-group">
-          <label>Shopify+pasarela/mes €</label>
-          <input type="number" class="input-dark" id="pShopify" value="190" step="5" min="0">
-        </div>
-        <div class="input-group">
-          <label>Envío+packaging+foto €</label>
-          <input type="number" class="input-dark" id="pEnvio" value="9.16" step="0.1" min="0">
-        </div>
-
-        <div class="params-group-label">Márgenes</div>
-        <div class="input-group">
-          <label>Objetivo margen (%)</label>
-          <input type="number" class="input-dark" id="pObjetivo" value="40" step="1" min="1" max="90">
-        </div>
-        <div class="input-group">
-          <label>Provisión impuestos (%)</label>
-          <input type="number" class="input-dark" id="pProvision" value="20" step="1" min="0" max="50">
+        <!-- Import / Export -->
+        <div class="io-row">
+          <button class="btn" id="exportParamsBtn">Exportar parámetros JSON</button>
+          <label class="btn" style="cursor:pointer">
+            Importar JSON
+            <input type="file" id="importParamsFile" accept=".json" style="display:none">
+          </label>
         </div>
 
       </div>
     </div>
   </div>
 
-</div><!-- .page -->
+</div><!-- /app -->
 
 <script>
-// ── State ──────────────────────────────────────────────────────────────────────
+// ── State ──────────────────────────────────────────────────────────────
 const state = {
-  pieceName:       '',
-  weight:          5,
-  piedras:         'none',
-  stoneCount:      0,
-  stonePriceUnit:  0.50,
-  stoneCostOtras:  0,
-  banoActive:      false,
-  grabadoActive:   false,
-  extraBano:       20,
-  extraCadena:     0,
-  extraTratam:     0,
-  extraOtro:       0,
-  customPrice:     null,
+  pieceName:'', weight:5, piedras:'none',
+  stoneCount:0, stonePriceUnit:0.50, stoneCostOtras:0,
+  banoActive:false, grabadoActive:false,
+  extraBano:20, extraCadena:0, extraTratam:0, extraOtro:0,
+  customPrice:null,
 };
-
 const params = {
-  precioPlata:   2.27,
-  leyPlata:      0.80,
-  merma:         0.10,
-  iva:           0.21,
-  personalMes:   1720,
-  personas:      4,
-  energiaMes:    144,
-  piezasMes:     120,
-  alquilerMes:   400,
-  amortMes:      180,
-  consumibles:   2.60,
-  shopifyMes:    190,
-  envioPieza:    9.16,
-  objetivo:      0.40,
-  provision:     0.20,
+  precioPlata:2.27, leyPlata:0.80, merma:0.10, iva:0.21,
+  personalMes:1720, personas:4, energiaMes:144, piezasMes:120,
+  alquilerMes:400, amortMes:180, consumibles:2.60,
+  shopifyMes:190, envioPieza:9.16, objetivo:0.40, provision:0.20,
 };
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
-const eur  = n => '€' + n.toFixed(2);
-const pct  = n => (n * 100).toFixed(1) + '%';
+// ── Stone catalog ───────────────────────────────────────────────────────
+let stoneCatalog = [
+  { id:'s1', name:'Cúbico pequeño (1–2mm)', priceUnit:0.20 },
+  { id:'s2', name:'Cúbico mediano (3–4mm)', priceUnit:0.50 },
+  { id:'s3', name:'Cúbico grande (5mm+)',   priceUnit:1.20 },
+  { id:'s4', name:'Zirconia blanca',        priceUnit:0.80 },
+  { id:'s5', name:'Ojo de tigre',           priceUnit:1.50 },
+];
 
-// ── Calculate ──────────────────────────────────────────────────────────────────
+// ── Presets ─────────────────────────────────────────────────────────────
+let presets = [];
+
+// ── Helpers ─────────────────────────────────────────────────────────────
+const $    = id => document.getElementById(id);
+const eur  = n  => '€' + n.toFixed(2);
+const pct  = n  => (n * 100).toFixed(1) + '%';
+const nv   = id => parseFloat($(id).value) || 0;
+const uid  = () => Math.random().toString(36).slice(2,8);
+
+// ── Calculate ────────────────────────────────────────────────────────────
 function calculate() {
   const p = params, s = state;
-
-  // Metal
   const finoG      = s.weight * p.leyPlata;
   const valorMetal = finoG * p.precioPlata;
   const metalCost  = valorMetal * (1 + p.merma);
-
-  // Stones
   let stonesCost = 0;
-  if      (s.piedras === 'cubicos') stonesCost = s.stoneCount * s.stonePriceUnit;
-  else if (s.piedras === 'otras')   stonesCost = s.stoneCostOtras;
-
-  // Extras
-  const extrasCost = (s.banoActive    ? s.extraBano   : 0)
-                   + s.extraCadena
-                   + (s.grabadoActive ? s.extraTratam  : 0)
-                   + s.extraOtro;
-
-  // Per-piece costs
-  const personalPP  = p.personalMes  / p.piezasMes;
-  const energiaPP   = p.energiaMes   / p.piezasMes;
-  const alquilerPP  = p.alquilerMes  / p.piezasMes;
-  const amortPP     = p.amortMes     / p.piezasMes;
-  const shopifyPP   = p.shopifyMes   / p.piezasMes;
-
-  // Subtotals
+  if (s.piedras === 'cubicos') stonesCost = s.stoneCount * s.stonePriceUnit;
+  else if (s.piedras === 'otras') stonesCost = s.stoneCostOtras;
+  const extrasCost = (s.banoActive ? s.extraBano : 0) + s.extraCadena
+                   + (s.grabadoActive ? s.extraTratam : 0) + s.extraOtro;
+  const personalPP = p.personalMes / p.piezasMes;
+  const energiaPP  = p.energiaMes  / p.piezasMes;
+  const alquilerPP = p.alquilerMes / p.piezasMes;
+  const amortPP    = p.amortMes    / p.piezasMes;
+  const shopifyPP  = p.shopifyMes  / p.piezasMes;
   const subtotalMat = metalCost + stonesCost + extrasCost + p.consumibles;
-  const totalProd   = personalPP + energiaPP;
-  const totalEstr   = alquilerPP + amortPP;
-  const ecomFixed   = shopifyPP  + p.envioPieza;
-  const baseCost    = subtotalMat + totalProd + totalEstr + ecomFixed;
-
-  // Suggested PVP (based on objective margin, excluding tax provision)
-  const pvpSinIva  = baseCost / (1 - p.objetivo);
-  const pvpConIva  = pvpSinIva * (1 + p.iva);
-  const pvpPerG    = s.weight > 0 ? pvpConIva / s.weight : 0;
-
-  // Tax provision computed on margin at suggested price
+  const baseCost    = subtotalMat + personalPP + energiaPP + alquilerPP + amortPP + shopifyPP + p.envioPieza;
+  const pvpSinIva   = baseCost / (1 - p.objetivo);
+  const pvpConIva   = pvpSinIva * (1 + p.iva);
+  const pvpPerG     = s.weight > 0 ? pvpConIva / s.weight : 0;
   const provisionCost = (pvpSinIva - baseCost) * p.provision;
-  const costoTotal    = baseCost + provisionCost;
-
-  // Real margin at suggested price
-  const realMargin    = pvpSinIva > 0 ? (pvpSinIva - costoTotal) / pvpSinIva : 0;
-  const faltanEuros   = pvpSinIva * (p.objetivo - realMargin); // gap to target in €
-
-  // Custom price analysis
+  const costoTotal  = baseCost + provisionCost;
+  const realMargin  = pvpSinIva > 0 ? (pvpSinIva - costoTotal) / pvpSinIva : 0;
+  const faltanEuros = pvpSinIva * (p.objetivo - realMargin);
   let customMargin = null;
   if (s.customPrice !== null && s.customPrice > 0) {
-    const customSinIva = s.customPrice / (1 + p.iva);
-    customMargin = (customSinIva - costoTotal) / customSinIva;
+    const cSin = s.customPrice / (1 + p.iva);
+    customMargin = (cSin - costoTotal) / cSin;
   }
-
-  return {
-    finoG, valorMetal, metalCost,
-    stonesCost, extrasCost,
-    subtotalMat,
-    personalPP, energiaPP, alquilerPP, amortPP, shopifyPP,
-    baseCost,
-    pvpSinIva, pvpConIva, pvpPerG,
-    provisionCost,
-    costoTotal,
-    realMargin, faltanEuros,
-    customMargin,
-  };
+  return { finoG, valorMetal, metalCost, stonesCost, extrasCost,
+    subtotalMat, personalPP, energiaPP, alquilerPP, amortPP, shopifyPP,
+    baseCost, pvpSinIva, pvpConIva, pvpPerG, provisionCost,
+    costoTotal, realMargin, faltanEuros, customMargin };
 }
 
-// ── Render ─────────────────────────────────────────────────────────────────────
+// ── Render ───────────────────────────────────────────────────────────────
 function render() {
-  const c = calculate();
-  const p = params, s = state;
-
-  // Piece name
+  const c = calculate(), p = params, s = state;
   $('analysisPieceName').textContent = s.pieceName || 'Nueva pieza';
+  $('metalInfo').innerHTML = `<em>${c.finoG.toFixed(2)}g fino</em> · valor metálico: <em>${eur(c.valorMetal)}</em>`;
 
-  // Metal info
-  $('metalInfo').innerHTML = `<em>${c.finoG.toFixed(2)}g fino</em> &middot; valor metálico: <em>${eur(c.valorMetal)}</em>`;
+  const pvpEl = $('pvpPrice');
+  pvpEl.classList.remove('flash');
+  void pvpEl.offsetWidth;
+  pvpEl.textContent = eur(c.pvpConIva);
+  pvpEl.classList.add('flash');
+  $('pvpMeta').innerHTML = `<em>${eur(c.pvpSinIva)} sin IVA</em> · <em>${eur(c.pvpPerG)}/g</em>`;
 
-  // PVP
-  $('pvpPrice').textContent = eur(c.pvpConIva);
-  $('pvpMeta').innerHTML    = `<em>${eur(c.pvpSinIva)} sin IVA</em> &middot; <em>${eur(c.pvpPerG)}/g</em>`;
-
-  // Breakdown
-  $('bkMermaLbl').textContent  = Math.round(p.merma * 100);
-  $('bkMetal').textContent     = eur(c.metalCost);
-  $('bkPiedras').textContent   = eur(c.stonesCost);
-  $('bkExtras').textContent    = eur(c.extrasCost);
+  $('bkMermaLbl').textContent    = Math.round(p.merma * 100);
+  $('bkMetal').textContent       = eur(c.metalCost);
+  $('bkPiedras').textContent     = eur(c.stonesCost);
+  $('bkExtras').textContent      = eur(c.extrasCost);
   $('bkConsumibles').textContent = eur(p.consumibles);
   $('bkMatSubtotal').textContent = eur(c.subtotalMat);
   $('bkPersonalLbl').textContent = `Personal (${p.personas} persona${p.personas !== 1 ? 's' : ''})`;
-  $('bkPersonal').textContent   = eur(c.personalPP);
-  $('bkEnergia').textContent    = eur(c.energiaPP);
-  $('bkAlquiler').textContent   = eur(c.alquilerPP);
-  $('bkAmort').textContent      = eur(c.amortPP);
-  $('bkShopify').textContent    = eur(c.shopifyPP);
-  $('bkEnvio').textContent      = eur(p.envioPieza);
-  $('bkImpuestos').textContent  = eur(c.provisionCost);
-  $('bkTotal').textContent      = eur(c.costoTotal);
+  $('bkPersonal').textContent    = eur(c.personalPP);
+  $('bkEnergia').textContent     = eur(c.energiaPP);
+  $('bkAlquiler').textContent    = eur(c.alquilerPP);
+  $('bkAmort').textContent       = eur(c.amortPP);
+  $('bkShopify').textContent     = eur(c.shopifyPP);
+  $('bkEnvio').textContent       = eur(p.envioPieza);
+  $('bkImpuestos').textContent   = eur(c.provisionCost);
+  $('bkTotal').textContent       = eur(c.costoTotal);
 
-  // Margin bar
-  const target   = p.objetivo;
-  const real     = c.realMargin;
-  const barW     = Math.min(real / target, 1) * 100;
-  const fill     = $('marginFill');
-  fill.style.width = barW + '%';
+  const target = p.objetivo, real = c.realMargin;
+  const fill = $('marginFill');
+  fill.style.width      = Math.min(real / target, 1) * 100 + '%';
   fill.style.background = real >= target ? 'var(--green)'
                         : real >= target * 0.75 ? 'var(--orange)'
                         : 'var(--gold)';
-
   $('marginPct').textContent = pct(real);
-  $('marginObj').textContent = 'Objetivo: ' + pct(target);
+  $('marginObj').textContent = 'Obj: ' + pct(target);
   $('marginPct').style.color = real >= target ? 'var(--green)'
-                              : real >= target * 0.75 ? 'var(--orange)'
-                              : 'var(--text)';
+                             : real >= target * 0.75 ? 'var(--orange)'
+                             : 'var(--text)';
 
-  const msg   = $('marginMsg');
-  const alert = $('alertBox');
-
+  const msg = $('marginMsg'), alrt = $('alertBox');
   if (real >= target) {
-    const excess = eur(c.pvpSinIva * (real - target));
-    msg.textContent  = `Margen superior al objetivo en ${excess}`;
-    msg.className    = 'margin-msg ok';
-    alert.style.display = 'none';
+    msg.textContent = `+${eur(c.pvpSinIva * (real - target))} sobre el objetivo`;
+    msg.className = 'margin-msg ok';
+    alrt.style.display = 'none';
   } else {
-    const faltan = eur(Math.abs(c.faltanEuros));
-    msg.textContent  = `Faltan ${faltan} de margen para llegar al objetivo`;
-    msg.className    = 'margin-msg warn';
-    alert.style.display = 'block';
-    alert.className  = 'alert-box';
-    alert.textContent = `Margen ajustado. Subi el PVP o reducí extras para llegar al ${pct(target)}.`;
+    msg.textContent = `Faltan ${eur(Math.abs(c.faltanEuros))} de margen`;
+    msg.className = 'margin-msg warn';
+    alrt.style.display = 'block';
+    alrt.className = 'alert warn';
+    alrt.textContent = `Subí el PVP o reducí extras para llegar al ${pct(target)}.`;
   }
 
-  // Custom price result
   const cr = $('customMarginResult');
   if (s.customPrice !== null && c.customMargin !== null) {
     cr.style.display = 'block';
     if (c.customMargin >= 0) {
-      const col = c.customMargin >= target ? 'var(--green)' : 'var(--orange)';
-      cr.style.color   = col;
-      cr.textContent   = `Margen con tu precio: ${pct(c.customMargin)}`;
+      cr.style.color = c.customMargin >= target ? 'var(--green)' : 'var(--orange)';
+      cr.textContent = `Margen con tu precio: ${pct(c.customMargin)}`;
     } else {
-      cr.style.color   = 'var(--red)';
-      cr.textContent   = `Precio por debajo del costo total`;
+      cr.style.color = 'var(--red)';
+      cr.textContent = 'Precio por debajo del costo total';
     }
   } else {
     cr.style.display = 'none';
   }
 }
 
-// ── Small helper ───────────────────────────────────────────────────────────────
-function $(id) { return document.getElementById(id); }
-
-function numVal(id) { return parseFloat($(id).value) || 0; }
-
-// ── Events ─────────────────────────────────────────────────────────────────────
-function setupEvents() {
-
-  // Piece name
-  $('pieceName').addEventListener('input', e => {
-    state.pieceName = e.target.value;
-    render();
+// ── Stone catalog UI ─────────────────────────────────────────────────────
+function renderStoneCatalog() {
+  const list = $('stoneCatalogList');
+  list.innerHTML = '';
+  stoneCatalog.forEach((stone, i) => {
+    const div = document.createElement('div');
+    div.className = 'catalog-item';
+    div.innerHTML = `<input class="ci-name" value="${stone.name}" data-i="${i}" placeholder="Nombre">
+      <input class="ci-price" type="number" value="${stone.priceUnit}" step="0.01" min="0" data-i="${i}">
+      <span class="ci-unit">€/ud</span>
+      <button class="ci-del" data-i="${i}" title="Eliminar">×</button>`;
+    list.appendChild(div);
   });
+  list.querySelectorAll('.ci-name').forEach(el => el.addEventListener('input', e => {
+    stoneCatalog[+e.target.dataset.i].name = e.target.value;
+    refreshStoneSelect(); saveStoneCatalog();
+  }));
+  list.querySelectorAll('.ci-price').forEach(el => el.addEventListener('input', e => {
+    stoneCatalog[+e.target.dataset.i].priceUnit = parseFloat(e.target.value) || 0;
+    saveStoneCatalog();
+  }));
+  list.querySelectorAll('.ci-del').forEach(el => el.addEventListener('click', e => {
+    stoneCatalog.splice(+e.target.dataset.i, 1);
+    renderStoneCatalog(); refreshStoneSelect(); saveStoneCatalog();
+  }));
+}
 
-  // Weight stepper
+function refreshStoneSelect() {
+  const sel = $('stoneTypeSelect');
+  const cur = sel.value;
+  sel.innerHTML = stoneCatalog.map(s =>
+    `<option value="${s.id}">${s.name} — €${s.priceUnit.toFixed(2)}/ud</option>`
+  ).join('') + `<option value="custom">Personalizado</option>`;
+  if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
+}
+
+// ── Presets UI ──────────────────────────────────────────────────────────
+function renderPresetSelect() {
+  const sel = $('presetSelect');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— Nueva pieza —</option>'
+    + presets.map((p, i) => `<option value="${i}">${p.name}</option>`).join('');
+  if (cur !== '' && presets[+cur]) sel.value = cur;
+  $('deletePresetBtn').style.display = sel.value !== '' ? 'inline-block' : 'none';
+}
+
+function syncFormFromState() {
+  $('pieceName').value        = state.pieceName;
+  $('weightInput').value      = state.weight;
+  $('stoneCount').value       = state.stoneCount;
+  $('stonePriceUnit').value   = state.stonePriceUnit;
+  $('stoneCostOtras').value   = state.stoneCostOtras;
+  $('extraBano').value        = state.extraBano;
+  $('extraCadena').value      = state.extraCadena;
+  $('extraTratam').value      = state.extraTratam;
+  $('extraOtro').value        = state.extraOtro;
+  document.querySelectorAll('#piedrasGroup .toggle-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.val === state.piedras));
+  $('stoneBlockCubicos').classList.toggle('visible', state.piedras === 'cubicos');
+  $('stoneBlockOtras').classList.toggle('visible', state.piedras === 'otras');
+  $('extrasGroup').querySelectorAll('.toggle-btn').forEach(b => {
+    if (b.dataset.extra === 'bano') {
+      b.classList.toggle('active', state.banoActive);
+      $('extraBano').disabled = !state.banoActive;
+    } else if (b.dataset.extra === 'grabado') {
+      b.classList.toggle('active', state.grabadoActive);
+      $('extraTratam').disabled = !state.grabadoActive;
+    }
+  });
+}
+
+// ── Storage ─────────────────────────────────────────────────────────────
+const LS = { params:'donrouch_params_v1', presets:'donrouch_presets_v1', stones:'donrouch_stones_v1' };
+const tryParse = key => { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch(_){ return null; } };
+const saveParams  = () => { try { localStorage.setItem(LS.params,  JSON.stringify(params));      } catch(_){} };
+const savePresets = () => { try { localStorage.setItem(LS.presets, JSON.stringify(presets));     } catch(_){} };
+const saveStoneCatalog = () => { try { localStorage.setItem(LS.stones, JSON.stringify(stoneCatalog)); } catch(_){} };
+
+const PARAM_ID_MAP = {
+  precioPlata:'pPrecioPlata', leyPlata:'pLeyPlata', merma:'pMerma', iva:'pIva',
+  personalMes:'pPersonal', personas:'pPersonas', energiaMes:'pEnergia',
+  piezasMes:'pPiezas', alquilerMes:'pAlquiler', amortMes:'pAmort',
+  consumibles:'pConsumibles', shopifyMes:'pShopify', envioPieza:'pEnvio',
+  objetivo:'pObjetivo', provision:'pProvision',
+};
+const SCALE = { leyPlata:100, merma:100, iva:100, objetivo:100, provision:100 };
+
+function syncParamInputs() {
+  Object.entries(PARAM_ID_MAP).forEach(([key, id]) => {
+    $(id).value = +(params[key] * (SCALE[key] || 1)).toFixed(4);
+  });
+}
+
+function loadAll() {
+  const sp = tryParse(LS.params);
+  if (sp) Object.keys(params).forEach(k => { if (sp[k] !== undefined) params[k] = sp[k]; });
+  const ss = tryParse(LS.stones);
+  if (ss) stoneCatalog = ss;
+  const pr = tryParse(LS.presets);
+  if (pr) presets = pr;
+  syncParamInputs();
+}
+
+// ── Export / Import ──────────────────────────────────────────────────────
+function downloadJSON(obj, filename) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 2)], { type:'application/json' }));
+  a.download = filename; a.click();
+}
+
+function importFromFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.params)      { Object.keys(params).forEach(k => { if (data.params[k] !== undefined) params[k] = data.params[k]; }); saveParams(); syncParamInputs(); }
+      if (data.stoneCatalog){ stoneCatalog = data.stoneCatalog; saveStoneCatalog(); renderStoneCatalog(); refreshStoneSelect(); }
+      if (data.presets)     { presets = data.presets; savePresets(); renderPresetSelect(); }
+      render();
+    } catch(_) { alert('JSON inválido'); }
+  };
+  reader.readAsText(file);
+}
+
+function buildSummary() {
+  const c = calculate(), s = state;
+  const lines = [
+    `${s.pieceName || 'Nueva pieza'} — 0800 Don Rouch`,
+    `Peso: ${s.weight}g plata 800`,
+    ``,
+    `PVP sugerido (IVA inc.): ${eur(c.pvpConIva)}`,
+    `Sin IVA: ${eur(c.pvpSinIva)}  ·  ${eur(c.pvpPerG)}/g`,
+    `Costo total real: ${eur(c.costoTotal)}`,
+    `Margen real: ${pct(c.realMargin)}`,
+  ];
+  if (s.customPrice) lines.push(`Margen con ${eur(s.customPrice)}: ${pct(c.customMargin)}`);
+  return lines.join('\n');
+}
+
+// ── Events ───────────────────────────────────────────────────────────────
+function setupEvents() {
+  $('pieceName').addEventListener('input', e => { state.pieceName = e.target.value; render(); });
+
   $('weightMinus').addEventListener('click', () => {
-    const v = Math.max(0, parseFloat((numVal('weightInput') - 0.5).toFixed(3)));
-    $('weightInput').value = v;
-    state.weight = v;
-    render();
+    const v = Math.max(0, parseFloat((nv('weightInput') - 0.5).toFixed(3)));
+    $('weightInput').value = v; state.weight = v; render();
   });
   $('weightPlus').addEventListener('click', () => {
-    const v = parseFloat((numVal('weightInput') + 0.5).toFixed(3));
-    $('weightInput').value = v;
-    state.weight = v;
-    render();
+    const v = parseFloat((nv('weightInput') + 0.5).toFixed(3));
+    $('weightInput').value = v; state.weight = v; render();
   });
-  $('weightInput').addEventListener('input', e => {
-    state.weight = parseFloat(e.target.value) || 0;
-    render();
-  });
+  $('weightInput').addEventListener('input', e => { state.weight = parseFloat(e.target.value) || 0; render(); });
 
-  // Piedras toggles
   $('piedrasGroup').addEventListener('click', e => {
     const btn = e.target.closest('.toggle-btn');
     if (!btn) return;
     $('piedrasGroup').querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     state.piedras = btn.dataset.val;
-    $('stoneInputsCubicos').classList.toggle('visible', state.piedras === 'cubicos');
-    $('stoneInputsOtras').classList.toggle('visible', state.piedras === 'otras');
+    $('stoneBlockCubicos').classList.toggle('visible', state.piedras === 'cubicos');
+    $('stoneBlockOtras').classList.toggle('visible', state.piedras === 'otras');
     render();
   });
 
-  $('stoneCount').addEventListener('input', e => { state.stoneCount = numVal('stoneCount'); render(); });
-  $('stonePriceUnit').addEventListener('input', e => { state.stonePriceUnit = numVal('stonePriceUnit'); render(); });
-  $('stoneCostOtras').addEventListener('input', e => { state.stoneCostOtras = numVal('stoneCostOtras'); render(); });
+  $('stoneTypeSelect').addEventListener('change', e => {
+    const stone = stoneCatalog.find(s => s.id === e.target.value);
+    if (stone) { $('stonePriceUnit').value = stone.priceUnit; state.stonePriceUnit = stone.priceUnit; render(); }
+  });
 
-  // Extras toggles (independent, not exclusive)
+  $('stoneCount').addEventListener('input', () => { state.stoneCount = nv('stoneCount'); render(); });
+  $('stonePriceUnit').addEventListener('input', () => { state.stonePriceUnit = nv('stonePriceUnit'); render(); });
+  $('stoneCostOtras').addEventListener('input', () => { state.stoneCostOtras = nv('stoneCostOtras'); render(); });
+
   $('extrasGroup').addEventListener('click', e => {
     const btn = e.target.closest('.toggle-btn');
     if (!btn) return;
@@ -885,122 +1070,109 @@ function setupEvents() {
     render();
   });
 
-  ['extraBano','extraCadena','extraTratam','extraOtro'].forEach(id => {
-    $(id).addEventListener('input', () => { state[id] = numVal(id); render(); });
-  });
+  ['extraBano','extraCadena','extraTratam','extraOtro'].forEach(id =>
+    $(id).addEventListener('input', () => { state[id] = nv(id); render(); }));
 
-  // Custom price
   $('customPrice').addEventListener('input', e => {
     const v = parseFloat(e.target.value);
-    state.customPrice = isNaN(v) ? null : v;
-    render();
+    state.customPrice = isNaN(v) ? null : v; render();
   });
   $('clearCustom').addEventListener('click', () => {
-    $('customPrice').value = '';
-    state.customPrice = null;
-    render();
+    $('customPrice').value = ''; state.customPrice = null; render();
   });
 
-  // Params panel
   $('paramsToggle').addEventListener('click', () => {
     $('paramsToggle').classList.toggle('open');
     $('paramsPanel').classList.toggle('open');
   });
 
-  // Param inputs → params object
-  const paramMap = {
-    pPrecioPlata: { key: 'precioPlata',  scale: 1    },
-    pLeyPlata:    { key: 'leyPlata',     scale: 0.01 },
-    pMerma:       { key: 'merma',        scale: 0.01 },
-    pIva:         { key: 'iva',          scale: 0.01 },
-    pPersonal:    { key: 'personalMes',  scale: 1    },
-    pPersonas:    { key: 'personas',     scale: 1    },
-    pEnergia:     { key: 'energiaMes',   scale: 1    },
-    pPiezas:      { key: 'piezasMes',    scale: 1    },
-    pAlquiler:    { key: 'alquilerMes',  scale: 1    },
-    pAmort:       { key: 'amortMes',     scale: 1    },
-    pConsumibles: { key: 'consumibles',  scale: 1    },
-    pShopify:     { key: 'shopifyMes',   scale: 1    },
-    pEnvio:       { key: 'envioPieza',   scale: 1    },
-    pObjetivo:    { key: 'objetivo',     scale: 0.01 },
-    pProvision:   { key: 'provision',    scale: 0.01 },
+  const PARAM_MAP = {
+    pPrecioPlata:{ key:'precioPlata', s:1    }, pLeyPlata:{ key:'leyPlata', s:0.01 },
+    pMerma:      { key:'merma',       s:0.01 }, pIva:     { key:'iva',      s:0.01 },
+    pPersonal:   { key:'personalMes', s:1    }, pPersonas:{ key:'personas', s:1    },
+    pEnergia:    { key:'energiaMes',  s:1    }, pPiezas:  { key:'piezasMes',s:1    },
+    pAlquiler:   { key:'alquilerMes', s:1    }, pAmort:   { key:'amortMes', s:1    },
+    pConsumibles:{ key:'consumibles', s:1    }, pShopify: { key:'shopifyMes',s:1   },
+    pEnvio:      { key:'envioPieza',  s:1    }, pObjetivo:{ key:'objetivo',  s:0.01 },
+    pProvision:  { key:'provision',   s:0.01 },
   };
-
-  Object.entries(paramMap).forEach(([id, { key, scale }]) => {
+  Object.entries(PARAM_MAP).forEach(([id, {key, s}]) => {
     $(id).addEventListener('input', e => {
-      params[key] = (parseFloat(e.target.value) || 0) * scale;
-      render();
+      params[key] = (parseFloat(e.target.value) || 0) * s;
+      saveParams(); render();
     });
+  });
+
+  // Presets
+  $('presetSelect').addEventListener('change', e => {
+    $('deletePresetBtn').style.display = e.target.value !== '' ? 'inline-block' : 'none';
+    if (e.target.value === '') return;
+    const saved = presets[+e.target.value];
+    if (saved) { Object.assign(state, JSON.parse(JSON.stringify(saved.state))); syncFormFromState(); render(); }
+  });
+  $('savePresetBtn').addEventListener('click', () => {
+    const name = (state.pieceName || 'Pieza').trim() || 'Sin nombre';
+    const idx  = $('presetSelect').value;
+    const snap = JSON.parse(JSON.stringify(state));
+    if (idx !== '') presets[+idx] = { name, state: snap };
+    else            presets.push({ name, state: snap });
+    savePresets(); renderPresetSelect();
+    $('presetSelect').value = presets.length - 1;
+    $('deletePresetBtn').style.display = 'inline-block';
+  });
+  $('deletePresetBtn').addEventListener('click', () => {
+    presets.splice(+$('presetSelect').value, 1);
+    $('presetSelect').value = '';
+    savePresets(); renderPresetSelect();
+  });
+
+  // Stone catalog
+  $('addStoneBtn').addEventListener('click', () => {
+    stoneCatalog.push({ id: uid(), name: 'Nueva piedra', priceUnit: 0 });
+    renderStoneCatalog(); refreshStoneSelect(); saveStoneCatalog();
+  });
+
+  // Copy / Export
+  $('copyBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(buildSummary()).then(() => {
+      $('copyBtn').textContent = '¡Copiado!';
+      $('copyBtn').classList.add('success');
+      setTimeout(() => { $('copyBtn').textContent = 'Copiar resumen'; $('copyBtn').classList.remove('success'); }, 2000);
+    }).catch(() => {});
+  });
+
+  $('exportBtn').addEventListener('click', () => {
+    const c = calculate(), s = state;
+    downloadJSON({
+      pieza: s.pieceName || 'Nueva pieza', peso: s.weight,
+      pvp_iva: +c.pvpConIva.toFixed(2), pvp_sin_iva: +c.pvpSinIva.toFixed(2),
+      costo_total: +c.costoTotal.toFixed(2), margen: +c.realMargin.toFixed(4),
+      detalle: {
+        metal:+c.metalCost.toFixed(2), piedras:+c.stonesCost.toFixed(2),
+        extras:+c.extrasCost.toFixed(2), consumibles:+params.consumibles.toFixed(2),
+        personal:+c.personalPP.toFixed(2), energia:+c.energiaPP.toFixed(2),
+        alquiler:+c.alquilerPP.toFixed(2), amort:+c.amortPP.toFixed(2),
+        shopify:+c.shopifyPP.toFixed(2), envio:+params.envioPieza.toFixed(2),
+        impuestos:+c.provisionCost.toFixed(2),
+      }
+    }, `${(s.pieceName || 'pieza').replace(/\s+/g,'-').toLowerCase()}.json`);
+  });
+
+  $('exportParamsBtn').addEventListener('click', () =>
+    downloadJSON({ params, stoneCatalog, presets }, 'donrouch-params.json'));
+
+  $('importParamsFile').addEventListener('change', e => {
+    if (e.target.files[0]) importFromFile(e.target.files[0]);
+    e.target.value = '';
   });
 }
 
-// ── localStorage persistence ───────────────────────────────────────────────────
-const LS_KEY = 'donrouch_params_v1';
-
-function saveParams() {
-  try { localStorage.setItem(LS_KEY, JSON.stringify(params)); } catch (_) {}
-}
-
-function loadParams() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
-    if (!saved) return;
-    Object.keys(params).forEach(k => { if (saved[k] !== undefined) params[k] = saved[k]; });
-    // Sync inputs
-    const scaleMap = { leyPlata: 100, merma: 100, iva: 100, objetivo: 100, provision: 100 };
-    const idMap = {
-      precioPlata: 'pPrecioPlata', leyPlata: 'pLeyPlata', merma: 'pMerma', iva: 'pIva',
-      personalMes: 'pPersonal', personas: 'pPersonas', energiaMes: 'pEnergia',
-      piezasMes: 'pPiezas', alquilerMes: 'pAlquiler', amortMes: 'pAmort',
-      consumibles: 'pConsumibles', shopifyMes: 'pShopify', envioPieza: 'pEnvio',
-      objetivo: 'pObjetivo', provision: 'pProvision',
-    };
-    Object.entries(idMap).forEach(([key, id]) => {
-      const scale = scaleMap[key] || 1;
-      $(id).value = +(params[key] * scale).toFixed(4);
-    });
-  } catch (_) {}
-}
-
-// ── Copy summary ───────────────────────────────────────────────────────────────
-function buildSummary() {
-  const c = calculate();
-  const s = state;
-  const name = s.pieceName || 'Nueva pieza';
-  const lines = [
-    `📋 ${name} — 0800 Don Rouch`,
-    `Peso: ${s.weight}g plata 800`,
-    ``,
-    `PVP sugerido (IVA inc.): ${eur(c.pvpConIva)}`,
-    `Sin IVA: ${eur(c.pvpSinIva)}  ·  ${eur(c.pvpPerG)}/g`,
-    `Costo total real: ${eur(c.costoTotal)}`,
-    `Margen real: ${pct(c.realMargin)}`,
-  ];
-  if (s.customPrice) {
-    lines.push(`Margen con precio ${eur(s.customPrice)}: ${pct(c.customMargin)}`);
-  }
-  return lines.join('\n');
-}
-
-// ── Init ───────────────────────────────────────────────────────────────────────
-loadParams();
+// ── Init ─────────────────────────────────────────────────────────────────
+loadAll();
+renderStoneCatalog();
+refreshStoneSelect();
+renderPresetSelect();
 setupEvents();
-
-// Attach copy button
-$('copyBtn').addEventListener('click', () => {
-  navigator.clipboard.writeText(buildSummary()).then(() => {
-    const btn = $('copyBtn');
-    btn.textContent = 'Copiado!';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copiar resumen de precio'; btn.classList.remove('copied'); }, 2000);
-  }).catch(() => {});
-});
-
-// Auto-save params on input
-document.querySelectorAll('.input-dark').forEach(el => {
-  el.addEventListener('change', saveParams);
-});
-
 render();
 </script>
 </body>
